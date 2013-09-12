@@ -1,6 +1,7 @@
 package fileutil
 
 import (
+	"io"
 	"os"
 )
 
@@ -14,4 +15,18 @@ func Exists(path string) (bool, error) {
 		return false, nil
 	}
 	return false, err
+}
+
+func CopyFile(dst, src string) (int64, error) {
+	sf, err := os.Open(src)
+	if err != nil {
+		return 0, err
+	}
+	defer sf.Close()
+	df, err := os.Create(dst)
+	if err != nil {
+		return 0, err
+	}
+	defer df.Close()
+	return io.Copy(df, sf)
 }
